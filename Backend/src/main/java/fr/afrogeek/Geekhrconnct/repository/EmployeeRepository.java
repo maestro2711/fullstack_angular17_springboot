@@ -8,6 +8,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface EmployeeRepository  extends JpaRepository<Employee, UUID> {
-     //List<Employee> findByDepartmentId(UUID departmentid);
+public interface EmployeeRepository  extends JpaRepository<Employee,UUID> {
+    // List<Employee> findByEmployeeId(UUID employeeid);
 }
