@@ -11,5 +11,6 @@ import java.util.UUID;
 @Repository
 @RepositoryRestResource(exported = false)
 public interface EmployeeRepository  extends JpaRepository<Employee,UUID> {
+    //boolean existsByEmail(String email);
     //List<Employee> findByLastName(String lastname);
 }

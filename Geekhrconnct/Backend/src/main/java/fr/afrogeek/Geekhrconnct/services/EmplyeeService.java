@@ -1,5 +1,7 @@
 package fr.afrogeek.Geekhrconnct.services;
 
+import fr.afrogeek.Geekhrconnct.dto.EmployeeRequest;
+import fr.afrogeek.Geekhrconnct.dto.EmployeeResponse;
 import fr.afrogeek.Geekhrconnct.entity.Employee;
 import fr.afrogeek.Geekhrconnct.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 
@@ -15,43 +18,87 @@ public class EmplyeeService {
     private final EmployeeRepository employeeRepository;
 
     public EmplyeeService(EmployeeRepository employeeRepository) {
+
         this.employeeRepository = employeeRepository;
     }
 
     // pour creer un collaborateur
-    public Employee createEmployee(Employee employee){
-        return employeeRepository.save(employee);
+    public EmployeeResponse createEmployee(EmployeeRequest employeeRequest) {
+        return employeeRepository.save(this.employeeRequestToEmployee(employeeRequest)).toResponse();
     }
 
     // en mitarbeiter abrufen
-    public Employee getEmployeebyId(UUID id){
+    /*public Employee getEmployeebyId(UUID id){
         return employeeRepository.findById(id).orElseThrow(
                 ()->new RuntimeException("employee with id  "+id+ "not found")
         );
-    }
-    public List<Employee> getAllEmployee(){
-        return employeeRepository.findAll();
+    }*/
+    public List<EmployeeResponse> getAllEmployee() {
+        return employeeRepository.findAll().stream().map(Employee::toResponse).toList();
     }
 
     //mitarbeiter informationen aktualisieren
-    public Employee upDateEmployee(UUID id, Employee employeeDetails){
-        Employee employee = this.getEmployeebyId(id);
-        employee.setFirstName(employeeDetails.getFirstName());
-        employee.setLastName(employeeDetails.getLastName());
-        employee.setEmail(employeeDetails.getEmail());
-        employee.setPhone(employeeDetails.getPhone());
-        employee.setGender(employeeDetails.getGender());
-        employee.setDateOfBirth(employeeDetails.getDateOfBirth());
-        employee.setCity(employeeDetails.getCity());
-        employee.setCountry(employeeDetails.getCountry());
-        employee.setRemainingVacationDays(employeeDetails.getRemainingVacationDays());
-        employee.setOnVacation(employeeDetails.getOnVacation());
-        employee.setPosition(employeeDetails.getPosition());
-        return employeeRepository.save(employee);
+    public EmployeeResponse updateEmployee(java.util.UUID id, EmployeeRequest employeeRequest) {
+        Employee employeeToUpdate = getEmployeeById(id);
+
+        employeeToUpdate.setGender(employeeRequest.getGender());
+        employeeToUpdate.setFirstName(employeeRequest.getFirstName());
+        employeeToUpdate.setLastName(employeeRequest.getLastName());
+        employeeToUpdate.setEmail(employeeRequest.getEmail());
+        employeeToUpdate.setPhone(employeeRequest.getPhone());
+        employeeToUpdate.setDateOfBirth(employeeRequest.getDateOfBirth());
+        employeeToUpdate.setCity(employeeRequest.getCity());
+        employeeToUpdate.setCountry(employeeRequest.getCountry());
+        employeeToUpdate.setRemainingVacationDays(employeeRequest.getRemainingVacationDays());
+        employeeToUpdate.setOnVacation(employeeRequest.getOnVacation());
+        employeeToUpdate.setPosition(employeeRequest.getPosition());
+        //employeeToUpdate.setImageURL(employeeRequest.getImageURL());
+        employeeToUpdate.setSuperior(this.getSuperiorById(employeeRequest.getSuperiorId()));
+
+        return employeeRepository.save(employeeToUpdate).toResponse();
     }
+
+
+    public EmployeeResponse getEmployeeResponseById(UUID id) {
+        return this.getEmployeeById(id).toResponse();
+    }
+
+    private Employee getEmployeeById(UUID id) {
+        return employeeRepository.findById(id).orElseThrow(
+                ()-> new RuntimeException("Employee with "+id+" not found")
+        );
+    }
+
     //ein mitarbeiter löschen
     public void deleteEmployee(UUID id){
         employeeRepository.deleteById(id);
 
+    }
+
+    private Employee getSuperiorById(UUID id) {
+        Employee superior = null;
+        if(id !=null){
+            superior = this.getEmployeeById(id);
+        }
+        return superior;
+    }
+
+    private Employee employeeRequestToEmployee(EmployeeRequest employeeRequest){
+        Employee superior = this.getSuperiorById(employeeRequest.getSuperiorId());
+        return Employee.builder()
+                .gender(employeeRequest.getGender())
+                .firstName(employeeRequest.getFirstName())
+                .lastName(employeeRequest.getLastName())
+                .email(employeeRequest.getEmail())
+                .phone(employeeRequest.getPhone())
+                .dateOfBirth(employeeRequest.getDateOfBirth())
+                .city(employeeRequest.getCity())
+                .country(employeeRequest.getCountry())
+                .remainingVacationDays(employeeRequest.getRemainingVacationDays())
+                .onVacation(employeeRequest.isOnVacation())
+                .position(employeeRequest.getPosition())
+                //.imageURL(employeeRequest.getImageURL())
+                .superior(superior)
+                .build();
     }
 }

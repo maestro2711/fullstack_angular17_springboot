@@ -3,80 +3,187 @@ package fr.afrogeek.Geekhrconnct.util;
 
 import fr.afrogeek.Geekhrconnct.entity.Employee;
 import fr.afrogeek.Geekhrconnct.enums.Position;
+import fr.afrogeek.Geekhrconnct.enums.Gender;
 import fr.afrogeek.Geekhrconnct.repository.EmployeeRepository;
-import fr.afrogeek.Geekhrconnct.services.EmplyeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.time.Month;
-import java.time.ZoneOffset;
 import java.time.LocalDateTime;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 //@RequiredArgsConstructor
 public class DataBaseInitializer implements CommandLineRunner {
 
 
-    public DataBaseInitializer(EmplyeeService emplyeeService) {
-        this.emplyeeService = emplyeeService;
+    private final EmployeeRepository employeeRepository;
+
+    public DataBaseInitializer(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
     }
 
-    private final EmplyeeService emplyeeService ;
-    private static final Random RANDOM = new Random();
+
 
 
     @Override
     public void run(String... args) throws Exception {
-        for(int i=0; i<50;i++){
+        this.createEmployee();
+        /*for(int i=0; i<50;i++){
             Position position = Position.values()[(i==0)?0: RANDOM.nextInt(Position.values().length-1)+1];
             //Position position = null;
-            Employee employee = generateEmployee(position  ,i);
+
             emplyeeService.createEmployee(employee);
-        }
+        }*/
     }
-    private Employee generateEmployee(Position position, int index){
-        String[] firstNames = {
-                "Njoya","Mballa","Ngando","Ewane","Bikoi","Efouda","Dikoume","kenmoe","Yves","Joel",
-                "Akon","Beyala","Zang","Muna","Etoudi","Nkono","Mbouh","Eto","Matip","Marc","Sandro",
-                "Kameni","Choupo","Aboubakar","Bassogog","Djemba","song","Makoun","Njitap","kwekeu","Marco",
-                "Webo","Kana","Mandjeck","Sali","Nguemo","Oyongo","Ndy","Zambo","Alias","alioum","Metomo",
-                "Ateba","Edgard","Meyong","Marou","Bahoken","Tawamba","Lucy","Allianz"
-        };
-        String[] lastNames ={
-                "Okafor", "Mensah", "Diallo", "Nkosi", "Abebe", "Muthomi", "Kone", "Adekunle", "Osei", "Mamba",
-                "Oka", "Mens", "Dial", "kosi", "Abe", "Mutho", "Kon", "Adekune", "Osi", "Mambali",
-                "Osafore", "ensoh", "ilal", "Nosien", "bebe", "Mutusomi", "Konate", "Abdullah", "Oite", "amaba",
-                "Wokafor", "Gensah", "Tiallo", "Rosi", "Batabe", "Sathomi", "Paone", "LAdekunle", "Qosei", "Bamba",
-                "Okafir", "Mensih", "Diallu", "Nkosui", "Abebela", "Mutmi", "Konsah", "Adekunlin", "Oseneh", "Mamina"
-        };
-        String[] cities = {"Lagos", "Accra", "Nairobi", "Johannesburg", "Cairo", "Addis Ababa", "Dakar", "Kinshasa", "Khartoum", "Casablanca"};
-        String[] countries = {"Nigeria", "Ghana", "Kenya", "South Africa", "Egypt", "Ethiopia", "Senegal", "DR Congo", "Sudan", "Morocco"};
-        Employee.Gender[] genders={Employee.Gender.MEN, Employee.Gender.WOMEN};
-        String firstName = firstNames[index];
-        String lastName = lastNames[index];
-        String email = firstName.toLowerCase() + "." +lastName.toLowerCase()
-+ "@gmail.com";
-        String phone= "2376" + (1000000 + RANDOM.nextInt(9000000));
+    //@Transactional
+    public void createEmployee() {
+       // employeeRepository.deleteAll();
+        List<Employee> employees = new ArrayList<>();
+        // CEO
+        Employee ceo = Employee.builder()
+                .gender(Employee.Gender.WOMEN)
+                .firstName("Matia")
+                .lastName("Schmass")
+                .email("matia.schmass@company.com")
+                .phone("+49 170 1234567")
+                .city("Berlin")
+                .country("Germany")
+                .dateOfBirth(LocalDateTime.of(1975, 5, 15, 0, 0))
+                .remainingVacationDays(30L)
+                .onVacation(false)
+                .position(Position.CEO)
+                //.imageURL("https://example.com/images/john_doe.jpg")
+                .build();
+        employees.add(ceo);
 
+        // CTO
+        Employee cto= Employee.builder()
+                .gender(Employee.Gender.MEN)
+                .firstName("Thomas")
+                .lastName("Müller")
+                .email("thomas.mueller@company.com")
+                .phone("+49 171 2345678")
+                .city("München")
+                .country("Germany")
+                .dateOfBirth(LocalDateTime.of(1980, 8, 22, 0, 0))
+                .remainingVacationDays(28L)
+                .onVacation(false)
+                .position(Position.CTO)
+                //.imageURL("https://example.com/images/jane_smith.jpg")
+                .superior(ceo)
+                .build();
+        employees.add(cto);
 
-        // Generiere ein zufälliges Geburtsdatum für Mitarbeiter zwischen 18 und 65 Jahren
-       /* LocalDateTime now = LocalDateTime.now();
-        long minDay = now.minusYears(65).toEpochSecond(ZoneOffset.UTC);
-        long maxDay = now.minusYears(18).toEpochSecond(ZoneOffset.UTC);
-        Random random = null;
-        long randomDay = minDay + (long) (random.nextDouble() * (maxDay - minDay));*/
-        LocalDateTime dateOfBirth = LocalDateTime.of(1970 + RANDOM.nextInt(50), 1 + RANDOM.nextInt(12),1 + RANDOM.nextInt(28),0,0 );
+        // COO
+        Employee coo = Employee.builder()
+                .gender(Employee.Gender.WOMEN)
+                .firstName("Anna")
+                .lastName("Weber")
+                .email("anna.weber@company.com")
+                .phone("+49 172 3456789")
+                .city("Hamburg")
+                .country("Germany")
+                .dateOfBirth(LocalDateTime.of(1982, 3, 10, 0, 0))
+                .remainingVacationDays(28L)
+                .onVacation(false)
+                .position(Position.COO)
+                //.imageURL("https://example.com/images/michael_brown.jpg")
+                .superior(ceo)
+                .build();
+        employees.add(coo);
 
-        String city = cities[RANDOM.nextInt(cities.length)];
-        String country = countries[RANDOM.nextInt(countries.length)];
-        Employee.Gender gender = genders[RANDOM.nextInt(genders.length)];
-        Long  remainingVacationDays = 5 + RANDOM.nextLong(25);
-        boolean onVacation = RANDOM.nextBoolean();
+        // TEAM_MANAGER_SOFTWARE
+        Employee teamManager = Employee.builder()
+                .gender(Employee.Gender.MEN)
+                .firstName("Michael")
+                .lastName("Fischer")
+                .email("michael.fischer@company.com")
+                .phone("+49 173 4567890")
+                .city("Frankfurt")
+                .country("Germany")
+                .dateOfBirth(LocalDateTime.of(1985, 11, 5, 0, 0))
+                .remainingVacationDays(26L)
+                .onVacation(false)
+                .position(Position.TEAM_MANAGER_SOFTWARE)
+                //.imageURL("https://example.com/images/michael_brown.jpg")
+                .superior(cto)
+                .build();
+        employees.add(teamManager);
 
-        return new Employee(UUID.randomUUID(), gender,firstName, lastName, email, phone, city,country,dateOfBirth,remainingVacationDays,onVacation,position);
+        // SENIOR_SOFTWARE_DEVELOPER
+        Employee seniorDev = Employee.builder()
+                .gender(Employee.Gender.WOMEN)
+                .firstName("Laura")
+                .lastName("Becker")
+                .email("laura.becker@company.com")
+                .phone("+49 174 5678901")
+                .city("Köln")
+                .country("Germany")
+                .dateOfBirth(LocalDateTime.of(1988, 7, 18, 0, 0))
+                .remainingVacationDays(24L)
+                .onVacation(false)
+                .position(Position.SENIOR_SOFTWARE_DEVELOPER)
+                .superior(teamManager)
+                .build();
+       employees.add(seniorDev);
+
+        // SOFTWARE_DEVELOPER
+        Employee dev = Employee.builder()
+                .gender(Employee.Gender.MEN)
+                .firstName("David")
+                .lastName("Schneider")
+                .email("david.schneider@company.com")
+                .phone("+49 175 6789012")
+                .city("Stuttgart")
+                .country("Germany")
+                .dateOfBirth(LocalDateTime.of(1990, 9, 30, 0, 0))
+                .remainingVacationDays(22L)
+                .onVacation(false)
+                .position(Position.SOFTWARE_DEVELOPER)
+                //.imageURL("https://example.com/images/sophia_garcia.jpg")
+                .superior(seniorDev)
+                .build();
+        employees.add(dev);
+
+        // JUNIOR_SOFTWARE_DEVELOPER
+        Employee juniorDev = Employee.builder()
+                .gender(Employee.Gender.WOMEN)
+                .firstName("Sophie")
+                .lastName("Wagner")
+                .email("sophie.wagner@company.com")
+                .phone("+49 176 7890123")
+                .city("Düsseldorf")
+                .country("Germany")
+                .dateOfBirth(LocalDateTime.of(1995, 2, 14, 0, 0))
+                .remainingVacationDays(20L)
+                .onVacation(false)
+                .position(Position.JUNIOR_SOFTWARE_DEVELOPER)
+                //.imageURL("https://example.com/images/david_miller.jpg")
+                .superior(dev)
+                .build();
+        employees.add(juniorDev);
+
+        //Working Student
+
+        Employee workingStudent = Employee.builder()
+                .gender(Employee.Gender.MEN)
+                .firstName("Sophan")
+                .lastName("Wasah")
+                .email("sophan.wasah@company.com")
+                .phone("+49 176 7890789")
+                .city("manheim")
+                .country("Germany")
+                .dateOfBirth(LocalDateTime.of(1997, 6, 13, 0, 0))
+                .remainingVacationDays(26L)
+                .onVacation(false)
+                .position(Position.WORKING_STUDENT)
+                //.imageURL("https://example.com/images/olivia_williams.jpg")
+                .superior(juniorDev)
+                .build();
+        employees.add(workingStudent);
+        employeeRepository.saveAll(Arrays.asList(ceo,cto,coo,teamManager,seniorDev,dev,juniorDev,workingStudent));
 
     }
+   
 }
