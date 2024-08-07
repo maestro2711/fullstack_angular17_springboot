@@ -1,5 +1,8 @@
 package fr.afrogeek.Geekhrconnct.entity;
 
+import fr.afrogeek.Geekhrconnct.dto.EmployeeResponse;
+import fr.afrogeek.Geekhrconnct.enums.Position;
+import fr.afrogeek.Geekhrconnct.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,6 +12,8 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@ToString
 @Getter
 @Setter
 @Entity
@@ -55,12 +60,44 @@ public class Employee {
     @Column(nullable = false)
     private Position position;
 
+    /*@Column(nullable = false)
+    private String imageURL;*/
+
+    @ManyToOne
+    private Employee superior;
+
+
+    public EmployeeResponse toResponse(){
+        EmployeeResponse employeeResponse = EmployeeResponse.builder()
+                .id(this.id)
+                .gender(this.gender)
+                .firstName(this.firstName)
+                .lastName(this.lastName)
+                .email(this.email)
+                .phone(this.phone)
+                .dateOfBirth(this.dateOfBirth)
+                .city(this.city)
+                .country(this.country)
+                .remainingVacationDays(this.remainingVacationDays)
+                .onVacation(this.onVacation)
+                .position(this.position)
+                //.imageURL(this.imageURL)
+                .build();
+
+        if(this.superior!= null){
+            String gender = this.superior.gender==Gender.MEN?"Mr. ":"Mlle ";
+            String superiorName = gender + this.superior.lastName + " "+ this.superior.firstName;
+            employeeResponse.setSuperiorName(superiorName);
+            employeeResponse.setSuperiorId(this.superior.getId());
+        }
+
+        return employeeResponse;
+    }
+
+
     public enum Gender {
         MEN, WOMEN
     }
 
-    public enum Position {
-        CEO, DIRECTOR, PROJECT_MANAGER, DEVELOPER, SYSTEM_ANALYST, IT_SUPPORT, NETWORK_ENGINEER
-    }
 
 }

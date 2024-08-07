@@ -1,6 +1,8 @@
 package fr.afrogeek.Geekhrconnct.controller;
 
 
+import fr.afrogeek.Geekhrconnct.dto.EmployeeRequest;
+import fr.afrogeek.Geekhrconnct.dto.EmployeeResponse;
 import fr.afrogeek.Geekhrconnct.entity.Employee;
 import fr.afrogeek.Geekhrconnct.services.EmplyeeService;
 import org.springframework.web.bind.annotation.*;
@@ -14,28 +16,35 @@ public class EmployeeController {
     private final EmplyeeService emplyeeService;
 
     public EmployeeController(EmplyeeService emplyeeService) {
+
         this.emplyeeService = emplyeeService;
     }
     // abruf eines Mitarbeiter mit der ID
     @GetMapping("/{id}")
-    public Employee getEmployeeById(@PathVariable UUID id){
-        return emplyeeService.getEmployeebyId(id);
+    public EmployeeResponse getEmployeeById(@PathVariable UUID id) {
+        return emplyeeService.getEmployeeResponseById(id);
     }
+
     //Abruf alle mitarbeitern imm system
     @GetMapping
-    public List<Employee> getAllEmployee(){
+    public List<EmployeeResponse> getAllEmployee(){
         return emplyeeService.getAllEmployee();
     }
+
+
     // neue Mitarbeiter erstellen
     @PostMapping
-    public Employee createEmployee(@RequestBody Employee employee){
-        return emplyeeService.createEmployee(employee);
+    public EmployeeResponse createEmployee(@RequestBody EmployeeRequest employeeRequest) {
+        return emplyeeService.createEmployee(employeeRequest);
     }
+
+
     // ein Mitarbeiter aktualisieren
     @PutMapping("/{id}")
-    public Employee upDateEmployee(@PathVariable UUID id,@RequestBody Employee employee){
-        return emplyeeService.upDateEmployee(id,employee);
+    public EmployeeResponse updateEmployee(@PathVariable UUID id, @RequestBody EmployeeRequest employeeRequest) {
+        return emplyeeService.updateEmployee(id, employeeRequest);
     }
+
     // ein mitarbeieter löschen
 
     @DeleteMapping("/{id}")
