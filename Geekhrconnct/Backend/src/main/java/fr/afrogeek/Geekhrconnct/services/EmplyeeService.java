@@ -4,6 +4,7 @@ import fr.afrogeek.Geekhrconnct.dto.EmployeeRequest;
 import fr.afrogeek.Geekhrconnct.dto.EmployeeResponse;
 import fr.afrogeek.Geekhrconnct.entity.Employee;
 import fr.afrogeek.Geekhrconnct.repository.EmployeeRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class EmplyeeService {
 
     // pour creer un collaborateur
     public EmployeeResponse createEmployee(EmployeeRequest employeeRequest) {
+
         return employeeRepository.save(this.employeeRequestToEmployee(employeeRequest)).toResponse();
     }
 
@@ -38,7 +40,7 @@ public class EmplyeeService {
     }
 
     //mitarbeiter informationen aktualisieren
-    public EmployeeResponse updateEmployee(java.util.UUID id, EmployeeRequest employeeRequest) {
+    public EmployeeResponse updateEmployee(UUID id, EmployeeRequest employeeRequest) {
         Employee employeeToUpdate = getEmployeeById(id);
 
         employeeToUpdate.setGender(employeeRequest.getGender());
@@ -65,16 +67,19 @@ public class EmplyeeService {
 
     private Employee getEmployeeById(UUID id) {
         return employeeRepository.findById(id).orElseThrow(
-                ()-> new RuntimeException("Employee with "+id+" not found")
+                ()-> new EntityNotFoundException("Employee with "+id+" not found")
         );
     }
 
     //ein mitarbeiter löschen
-    public void deleteEmployee(UUID id){
-        employeeRepository.deleteById(id);
-
+    public void deleteEmployee(UUID id) {
+        if (employeeRepository.existsById(id)) {
+            employeeRepository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException("Mitarbeiter mit ID " + id + " nicht gefunden");
+        }
     }
-
+// ein superior durch die Id finden
     private Employee getSuperiorById(UUID id) {
         Employee superior = null;
         if(id !=null){
