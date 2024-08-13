@@ -48,7 +48,7 @@ public class EmployeeRequest {
     private Boolean onVacation;
 
 
-    private Position position;
+    private Position position ;
     private String imageURL;
     //private String superiorName;
     private UUID superiorId;

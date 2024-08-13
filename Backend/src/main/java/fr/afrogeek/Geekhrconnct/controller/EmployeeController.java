@@ -49,7 +49,7 @@ public class EmployeeController {
 
     @DeleteMapping("/{id}")
     public void deleteEmployee(@PathVariable UUID id){
-        emplyeeService.deleteEmployee(id);
+        emplyeeService.deleteEmployeeById(id);
     }
 
 }

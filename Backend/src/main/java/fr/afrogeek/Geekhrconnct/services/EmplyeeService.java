@@ -65,19 +65,19 @@ public class EmplyeeService {
         return this.getEmployeeById(id).toResponse();
     }
 
-    private Employee getEmployeeById(UUID id) {
+    public Employee getEmployeeById(UUID id) {
         return employeeRepository.findById(id).orElseThrow(
                 ()-> new EntityNotFoundException("Employee with "+id+" not found")
         );
     }
 
     //ein mitarbeiter löschen
-    public void deleteEmployee(UUID id) {
-        if (employeeRepository.existsById(id)) {
+    public void deleteEmployeeById(UUID id) {
+        //if (employeeRepository.existsById(id)) {
             employeeRepository.deleteById(id);
-        } else {
+        /*} else {
             throw new EntityNotFoundException("Mitarbeiter mit ID " + id + " nicht gefunden");
-        }
+        }*/
     }
     // ein superior durch die Id finden
     private Employee getSuperiorById(UUID id) {

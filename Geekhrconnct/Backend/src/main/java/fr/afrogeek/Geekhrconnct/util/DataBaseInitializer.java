@@ -38,7 +38,7 @@ public class DataBaseInitializer implements CommandLineRunner {
     }
     //@Transactional
     public void createEmployee() {
-       // employeeRepository.deleteAll();
+        // employeeRepository.deleteAll();
         List<Employee> employees = new ArrayList<>();
         // CEO
         Employee ceo = Employee.builder()
@@ -126,7 +126,7 @@ public class DataBaseInitializer implements CommandLineRunner {
                 .position(Position.SENIOR_SOFTWARE_DEVELOPER)
                 .superior(teamManager)
                 .build();
-       employees.add(seniorDev);
+        employees.add(seniorDev);
 
         // SOFTWARE_DEVELOPER
         Employee dev = Employee.builder()
@@ -185,5 +185,5 @@ public class DataBaseInitializer implements CommandLineRunner {
         employeeRepository.saveAll(Arrays.asList(ceo,cto,coo,teamManager,seniorDev,dev,juniorDev,workingStudent));
 
     }
-   
+
 }

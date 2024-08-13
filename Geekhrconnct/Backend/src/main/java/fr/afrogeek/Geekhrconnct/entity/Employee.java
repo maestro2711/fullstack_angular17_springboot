@@ -1,8 +1,8 @@
 package fr.afrogeek.Geekhrconnct.entity;
 
 import fr.afrogeek.Geekhrconnct.dto.EmployeeResponse;
-import fr.afrogeek.Geekhrconnct.enums.Position;
 import fr.afrogeek.Geekhrconnct.enums.Gender;
+import fr.afrogeek.Geekhrconnct.enums.Position;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -67,37 +67,35 @@ public class Employee {
     private Employee superior;
 
 
-  public EmployeeResponse toResponse(){
-      EmployeeResponse employeeResponse = EmployeeResponse.builder()
-              .id(this.id)
-              .gender(this.gender)
-              .firstName(this.firstName)
-              .lastName(this.lastName)
-              .email(this.email)
-              .phone(this.phone)
-              .dateOfBirth(this.dateOfBirth)
-              .city(this.city)
-              .country(this.country)
-              .remainingVacationDays(this.remainingVacationDays)
-              .onVacation(this.onVacation)
-              .position(this.position)
-              //.imageURL(this.imageURL)
-              .build();
+    public EmployeeResponse toResponse(){
+        EmployeeResponse employeeResponse = EmployeeResponse.builder()
+                .id(this.id)
+                .gender(this.gender)
+                .firstName(this.firstName)
+                .lastName(this.lastName)
+                .email(this.email)
+                .phone(this.phone)
+                .dateOfBirth(this.dateOfBirth)
+                .city(this.city)
+                .country(this.country)
+                .remainingVacationDays(this.remainingVacationDays)
+                .onVacation(this.onVacation)
+                .position(this.position)
+                //.imageURL(this.imageURL)
+                .build();
 
-      if(this.superior!= null){
-          String gender = this.superior.gender==Gender.MEN?"Mr. ":"Mlle ";
-          String superiorName = gender + this.superior.lastName + " "+ this.superior.firstName;
-          employeeResponse.setSuperiorName(superiorName);
-          employeeResponse.setSuperiorId(this.superior.getId());
-      }
+        if(this.superior!= null){
+            String gender = this.superior.gender==Gender.MEN?"Mr. ":"Mlle ";
+            String superiorName = gender + this.superior.lastName + " "+ this.superior.firstName;
+            employeeResponse.setSuperiorName(superiorName);
+            employeeResponse.setSuperiorId(this.superior.getId());
+        }
 
-      return employeeResponse;
-  }
-
+        return employeeResponse;
+    }
 
     public enum Gender {
         MEN, WOMEN
     }
-
 
 }

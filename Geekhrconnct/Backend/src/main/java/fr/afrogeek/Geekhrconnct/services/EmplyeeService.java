@@ -38,7 +38,6 @@ public class EmplyeeService {
     public List<EmployeeResponse> getAllEmployee() {
         return employeeRepository.findAll().stream().map(Employee::toResponse).toList();
     }
-
     //mitarbeiter informationen aktualisieren
     public EmployeeResponse updateEmployee(UUID id, EmployeeRequest employeeRequest) {
         Employee employeeToUpdate = getEmployeeById(id);

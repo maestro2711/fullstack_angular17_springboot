@@ -1,9 +1,9 @@
 package fr.afrogeek.Geekhrconnct.dto;
-
+//package fr.afrogeek.Geekhrconnct.enums;
 import fr.afrogeek.Geekhrconnct.entity.Employee;
-import fr.afrogeek.Geekhrconnct.enums.Position;
 import lombok.*;
 
+import javax.swing.text.Position;
 import java.time.LocalDateTime;
 import java.util.UUID;
 @Data
@@ -26,7 +26,7 @@ public class EmployeeResponse {
     private String country;
     private Long remainingVacationDays;
     private boolean onVacation;
-    private Position position;
+    private Position position ;
     private String imageURL;
     private String superiorName;
     private UUID superiorId;
