@@ -24,6 +24,11 @@ export class HeaderComponent  {
     }
   ];
 
+  imageUrl: string ="assets/logo/geek.png";
+
+  imageWidth: number = 100;
+  imageHeight: number = 50;
+
   
 }
 
