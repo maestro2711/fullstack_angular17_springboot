@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
+import {DividerModule} from "primeng/divider";
 
 @Component({
   selector: 'app-foooter',
   standalone: true,
-  imports: [],
+  imports: [
+    DividerModule
+  ],
   templateUrl: './foooter.component.html',
   styleUrl: './foooter.component.css'
 })
