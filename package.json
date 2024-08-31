@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "generate-api": "openapi-generator-cli generate -i http://localhost:8081/v3/api-docs -g typescript-angular -o ./src/api",
     "test": "ng test"
   },
   "private": true,
@@ -30,6 +31,7 @@
     "@angular-devkit/build-angular": "^17.3.8",
     "@angular/cli": "^17.3.8",
     "@angular/compiler-cli": "^17.3.0",
+    "@openapitools/openapi-generator-cli": "^2.13.5",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",

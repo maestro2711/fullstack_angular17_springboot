@@ -1,0 +1,32 @@
+
+@import "primeicons/primeicons.css";
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+@import "primeflex/primeflex.css";
+
+$color-primary: #005AC8;
+$color-text-on-primary: #fff;
+$color-shadow: #00000029;
+$color-background-hover: #fff;
+$color-text-hover: #005ACB;
+
+.text-color-secondary{
+  color:$color-text-on-primary;
+}
+
+.p-button{
+  background-color: $color-primary;
+  border-color:$color-primary;
+  color:$color-text-on-primary;
+  box-show: 2px 3px 6px $color-shadow;
+  font-weight: 600;
+  text-align: center;
+
+  &:hover{
+    background-color:$color-background-hover;
+    color:$color-text-hover;
+  }
+  .text-color-primary{
+    color:$color-primary;
+  }
+}

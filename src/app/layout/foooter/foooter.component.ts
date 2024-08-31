@@ -8,7 +8,7 @@ import {DividerModule} from "primeng/divider";
     DividerModule
   ],
   templateUrl: './foooter.component.html',
-  styleUrl: './foooter.component.css'
+  styleUrl: './foooter.component.scss'
 })
 export class FoooterComponent {
 

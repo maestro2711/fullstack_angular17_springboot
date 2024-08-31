@@ -9,18 +9,20 @@ import { MenubarModule } from 'primeng/menubar';
   standalone: true,
   imports: [MenubarModule,ButtonModule],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrl: './header.component.scss'
 })
 export class HeaderComponent  {
   public items: MenuItem[] =[
 
     {
       label: 'Employee',
-      icon: 'pi pi-home'
+      icon: 'pi pi-home',
+      routerLink: ['/']
     },
     {
       label:  'Company organisation chart',
-      icon: 'pi pi-th-large'
+      icon: 'pi pi-th-large',
+      routerLink:['/organisation']
     }
   ];
 
@@ -29,7 +31,7 @@ export class HeaderComponent  {
   imageWidth: number = 100;
   imageHeight: number = 50;
 
-  
+
 }
 
 
