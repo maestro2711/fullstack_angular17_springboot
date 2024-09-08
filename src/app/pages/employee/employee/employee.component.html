@@ -10,6 +10,7 @@
   >
     <ng-template pTemplate="caption">
       <div class="flex">
+        <p-button icon="pi pi-plus" label="Add Employee" (onClick)="openCreateEmployee()"></p-button>
         <p-iconField iconPosition="left" class="ml-auto">
           <p-inputIcon>
             <i class="pi pi-search"></i>
@@ -100,3 +101,49 @@
     </ng-template>
   </p-table>
 </div>
+
+<p-dialog
+    [header]="dialogTitle"
+    [modal]="true"
+    [(visible)]="showDialog" [style]="{width:'50vw'}"
+>
+  <p-divider align="left"><b>Personal Informations</b></p-divider>
+  <div class="grid">
+    <div class="col-12">
+      <label class="mb-2">Gender</label>
+      <p-dropdown [options]="['men','women']"> </p-dropdown>
+
+    </div>
+  </div>
+
+  <div class="col-12 md:col-6">
+    <div class="flex flex-column">
+      <label class="mb-2">FirstName</label>
+      <input pInputText/>
+    </div>
+  </div>
+
+  <div class="col-12 md:col-6">
+    <div class="flex flex-column">
+      <label class="mb-2">LastName</label>
+      <input pInputText/>
+    </div>
+  </div>
+
+  <p-divider align="left"> <b>Other Informations</b></p-divider>
+  <div class="grid">
+    <div class="col-12">
+      <div class="flex flex-column">
+        <label class="mb-2">On Vacation</label>
+        <p-inputSwitch ></p-inputSwitch>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button label="Cancel" severity="secondary" (onClick)="showDialog = false" />
+    <p-button label="Save" (onClick)="showDialog = false" />
+  </div>
+
+
+</p-dialog>

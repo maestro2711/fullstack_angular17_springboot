@@ -14,9 +14,13 @@ import {TagModule} from "primeng/tag";
 import {AgePipe} from "../../../pipes/age.pipe";
 import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
-import {ButtonDirective} from "primeng/button";
+import {Button, ButtonDirective} from "primeng/button";
 import {Ripple} from "primeng/ripple";
 import {InputTextModule} from "primeng/inputtext";
+import {DialogModule} from "primeng/dialog";
+import {DividerModule} from "primeng/divider";
+import {InputSwitchModule} from "primeng/inputswitch";
+import {DropdownModule} from "primeng/dropdown";
 
 @Component({
   selector: 'app-employee',
@@ -33,7 +37,12 @@ import {InputTextModule} from "primeng/inputtext";
     LowerCasePipe,
     IconFieldModule,
     InputIconModule,
-    InputTextModule
+    InputTextModule,
+    Button,
+    DialogModule,
+    DividerModule,
+    InputSwitchModule,
+    DropdownModule
   ],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.scss'
@@ -44,6 +53,8 @@ export class EmployeeComponent implements OnInit{
   public cols: Column[] = [];
   public globalFilterFields: string[] = [];
   public loading: boolean = true;
+  public showDialog: boolean =false;
+  public dialogTitle: string | undefined;
 
 
   constructor(private employeeService: EmployeeService){
@@ -57,6 +68,10 @@ export class EmployeeComponent implements OnInit{
 
   public onGlobFilter(table: Table, event: Event): void {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+  }
+  public openCreateEmployee():void{
+    this.showDialog = true;
+
   }
 
   private setupCols(): void{
