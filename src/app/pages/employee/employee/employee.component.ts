@@ -2,13 +2,11 @@ import {Component, OnInit, untracked} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable, take} from "rxjs";
 import { EmployeeService} from "../../../services/employee.service";
-import {EmployeeResponse} from "../../../../api";
-import {DatePipe, JsonPipe, LowerCasePipe} from "@angular/common";
+// @ts-ignore
+import {EmployeeRequest, EmployeeResponse,SuperiorResponse} from "../../../../dto";
+import {AsyncPipe, DatePipe, JsonPipe, LowerCasePipe} from "@angular/common";
 import {Table, TableModule} from "primeng/table";
 import {Column} from "../../../models/column";
-import {
-  checkCustomElementSelectorForErrors
-} from "@angular/compiler-cli/src/ngtsc/annotations/component/src/diagnostics";
 import {AvatarModule} from "primeng/avatar";
 import {TagModule} from "primeng/tag";
 import {AgePipe} from "../../../pipes/age.pipe";
@@ -21,6 +19,13 @@ import {DialogModule} from "primeng/dialog";
 import {DividerModule} from "primeng/divider";
 import {InputSwitchModule} from "primeng/inputswitch";
 import {DropdownModule} from "primeng/dropdown";
+import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {CalendarModule} from "primeng/calendar";
+import {InputNumberModule} from "primeng/inputnumber";
+import {InputMaskModule} from "primeng/inputmask";
+import {minAgeDateValidator, trimValidator} from "../../../utils/custom-validator";
+import {MessageService} from "primeng/api";
+import {ErrorMessagesComponent} from "../../../shared/error-messages/error-messages.component";
 
 @Component({
   selector: 'app-employee',
@@ -42,36 +47,112 @@ import {DropdownModule} from "primeng/dropdown";
     DialogModule,
     DividerModule,
     InputSwitchModule,
-    DropdownModule
+    DropdownModule,
+    ReactiveFormsModule,
+    CalendarModule,
+    InputNumberModule,
+    FormsModule,
+    InputMaskModule,ErrorMessagesComponent,AsyncPipe
   ],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.scss'
 })
 export class EmployeeComponent implements OnInit{
 
+  public dialogTitle: string = "Add Employee";
   public employees: EmployeeResponse[] = [];
   public cols: Column[] = [];
   public globalFilterFields: string[] = [];
   public loading: boolean = true;
-  public showDialog: boolean =false;
-  public dialogTitle: string | undefined;
+  public showDialog: boolean = false;
+  public employeeForm!: FormGroup;
+  public superiorByPosition$!: Observable<SuperiorResponse[]>;
+
+  public genderOptions = [
+    { label: 'Men', value: 'MEN' },
+    { label: 'Women', value: 'WOMEN' }
+  ];
+  public positionOptions = [
+    { label: 'CEO', value: 'CEO' },
+    { label: 'CTO', value: 'CTO' },
+    { label: 'C00', value: 'CTO' },
+    { label: 'Team Manager Software', value: 'TEAM_MANAGER_SOFTWARE' },
+    { label: 'Senior Software Developer', value: 'SENIOR_SOFTWARE_DEVELOPER' },
+    { label: 'Software Developer', value: 'SOFTWARE_DEVELOPER' },
+    { label: 'Junior Software Developer', value: 'JUNIOR_SOFTWARE_DEVELOPER' },
+    { label: 'Working Student', value: 'WORKING_STUDENT' },
+  ];
 
 
-  constructor(private employeeService: EmployeeService){
+  constructor(
+    private employeeService: EmployeeService,
+    private messageService: MessageService,
+  ){
 
   }
 
   ngOnInit(): void {
+    this.initializeForm();
     this.getEmployees();
     this.setupCols();
+  }
+
+  public getSuperiorByPosition(): void{
+    this.superiorByPosition$ = this.employeeService.getSuperiorsByPosition(this.employeeForm.value.position);
+  }
+
+  initializeForm(): void{
+    this.employeeForm = new FormGroup({
+      id: new FormControl(null),
+      imageURL: new FormControl(null),
+      gender: new FormControl(null, [Validators.required, trimValidator]),
+      firstName: new FormControl('', [Validators.required, trimValidator]),
+      lastName: new FormControl('', [Validators.required, trimValidator]),
+      email: new FormControl('', [trimValidator, Validators.required, Validators.email] ),
+      phone: new FormControl('', [Validators.required, trimValidator] ),
+      dateOfBirth: new FormControl('', [Validators.required, minAgeDateValidator(18)]),
+      city: new FormControl('', [Validators.required, trimValidator]),
+      country: new FormControl('', [Validators.required, trimValidator]),
+      remainingVacationDays: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(30)]),
+      onVacation: new FormControl(false),
+      position: new FormControl(null, [Validators.required, trimValidator]),
+      superiorId:new FormControl(null)
+    });
+  }
+
+  public onSubmit(): void{
+    if(!this.employeeForm.valid){
+      this.employeeForm.markAllAsTouched();
+      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Please correct the form'})
+    }else{
+      this.createEmployee(this.employeeForm.value);
+    }
+  }
+
+  private createEmployee(employeeRequest: EmployeeRequest): void{
+    this.employeeService.createEmployee({
+      ...employeeRequest,
+       imageURL: 'https://afrogeek.fr/assets/img/hrconnect/men/1.png'}
+    ).pipe(take(1))
+      .subscribe({
+        next: (employeeResponse: EmployeeResponse): void =>{
+          this.employees.unshift(employeeResponse);
+          this.showDialog = false;
+          this.messageService.add({severity: 'success', summary: 'Success', detail: 'Create Employee successfully'});
+        },
+        error: (): void =>{
+          this.messageService.add({severity: 'error', summary: 'Error', detail: 'Something went wrong'});
+        }
+      });
   }
 
   public onGlobFilter(table: Table, event: Event): void {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
-  public openCreateEmployee():void{
-    this.showDialog = true;
 
+  public openCreateEmployee(): void{
+    this.showDialog = true;
+    this.employeeForm.reset();
   }
 
   private setupCols(): void{

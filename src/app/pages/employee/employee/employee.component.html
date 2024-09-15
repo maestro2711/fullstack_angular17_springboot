@@ -103,47 +103,112 @@
 </div>
 
 <p-dialog
-    [header]="dialogTitle"
-    [modal]="true"
-    [(visible)]="showDialog" [style]="{width:'50vw'}"
+  [header]="dialogTitle"
+  [modal]="true"
+  [(visible)]="showDialog" [style]="{ width: '50vw' }"
 >
-  <p-divider align="left"><b>Personal Informations</b></p-divider>
-  <div class="grid">
-    <div class="col-12">
-      <label class="mb-2">Gender</label>
-      <p-dropdown [options]="['men','women']"> </p-dropdown>
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+    <p-divider align="left" type="solid"> <b>Personal Information</b></p-divider>
+    <div class="grid">
+      <div class="col-12">
+        <div class="flex flex-column">
+          <label class="mb-2 required-asterisk" for="gender">Gender</label>
+          <p-dropdown  formControlName="gender" optionValue="value" id="gender" [options]="genderOptions" optionLabel="label" placeholder="Select gender"></p-dropdown>
+          <small geek-error-messages control="gender" class="p-error"></small>
+        </div>
+      </div>
 
-    </div>
-  </div>
+      <div class="col-12 md:col-6">
+        <div class="flex flex-column">
+          <label class="mb-2 required-asterisk" for="firstName">FirstName</label>
+          <input pInputText formControlName="firstName" id="firstName"  />
+          <small geek-error-messages control="firstName" class="p-error"></small>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="flex flex-column">
+          <label class="mb-2 required-asterisk" for="lastName">LastName</label>
+          <input formControlName="lastName" pInputText id="lastName"  />
+          <small geek-error-messages control="lastName" class="p-error"></small>
+        </div>
+      </div>
 
-  <div class="col-12 md:col-6">
-    <div class="flex flex-column">
-      <label class="mb-2">FirstName</label>
-      <input pInputText/>
-    </div>
-  </div>
+      <div class="col-12 md:col-6">
+        <div class="flex flex-column">
+          <label class="mb-2 required-asterisk" for="email">Email</label>
+          <input pInputText formControlName="email" id="email" />
+          <small geek-error-messages control="email" class="p-error"></small>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="flex flex-column">
+          <label class="mb-2 required-asterisk" for="dateOfBirth">Date of Birth</label>
+          <input type="date" pInputText formControlName="dateOfBirth" id="dateOfBirth" />
+          <small geek-error-messages control="dateOfBirth" class="p-error"></small>
+        </div>
+      </div>
 
-  <div class="col-12 md:col-6">
-    <div class="flex flex-column">
-      <label class="mb-2">LastName</label>
-      <input pInputText/>
-    </div>
-  </div>
+      <div class="col-12 md:col-6">
+        <div class="flex flex-column">
+          <label class="mb-2 required-asterisk" for="position">Position</label>
+          <p-dropdown formControlName="position" optionValue="value" id="position" [options]="positionOptions" optionLabel="label" placeholder="Select position"></p-dropdown>
+          <small geek-error-messages control="position" class="p-error"></small>
+        </div>
+      </div>
 
-  <p-divider align="left"> <b>Other Informations</b></p-divider>
-  <div class="grid">
-    <div class="col-12">
-      <div class="flex flex-column">
-        <label class="mb-2">On Vacation</label>
-        <p-inputSwitch ></p-inputSwitch>
+     <div class="col-12 md:col-6">
+        <div class="flex flex-column">
+          <label class="mb-2 required-asterisk" for="superiorId">Superior</label>
+          <p-dropdown formControlName="superiorId" optionLabel="label" optionValue="id" id="superiorId" [options]="positionOptions"  placeholder="Select the superior"></p-dropdown>
+          <small geek-error-messages control="superiorId" class="p-error"></small>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="flex justify-content-end gap-2">
-    <p-button label="Cancel" severity="secondary" (onClick)="showDialog = false" />
-    <p-button label="Save" (onClick)="showDialog = false" />
-  </div>
+    <p-divider align="left" type="solid"> <b>Other Information</b></p-divider>
+    <div class="grid">
+      <div class="col-12 md:col-6">
+        <div class="flex flex-column">
+          <label class="mb-2 required-asterisk" for="city">City</label>
+          <input pInputText formControlName="city" id="city" />
+          <small geek-error-messages control="city" class="p-error"></small>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="flex flex-column">
+          <label class="mb-2 required-asterisk" for="country">Country</label>
+          <input pInputText formControlName="country" id="country" />
+          <small geek-error-messages control="country" class="p-error"></small>
+        </div>
+      </div>
 
+      <div class="col-12 md:col-6">
+        <div class="flex flex-column">
+          <label class="mb-2 required-asterisk" for="phone">Phone</label>
+          <input pInputText formControlName="phone" id="phone" />
+          <small geek-error-messages control="phone" class="p-error"></small>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="flex flex-column">
+          <label class="mb-2 required-asterisk" for="remainingVacationDays">Remaining Vacation Days</label>
+          <input type="number" pInputText formControlName="remainingVacationDays" id="remainingVacationDays" min="0" />
+          <small geek-error-messages control="remainingVacationDays" class="p-error"></small>
+        </div>
+      </div>
 
+      <div class="col-12 md:col-6">
+        <div class="flex flex-column">
+          <label class="mb-2 required-asterisk" for="onVacation">On Vacation</label>
+          <p-inputSwitch formControlName="onVacation" id="onVacation"></p-inputSwitch>
+          <small geek-error-messages control="onVacation" class="p-error"></small>
+        </div>
+      </div>
+    </div>
+    <p-divider></p-divider>
+
+    <div class="flex justify-content-end gap-2">
+      <p-button label="Save" type="submit" />
+    </div>
+  </form>
 </p-dialog>

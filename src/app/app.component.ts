@@ -9,6 +9,7 @@ import { DividerModule } from 'primeng/divider';
 import {EmployeeComponent} from "./pages/employee/employee/employee.component";
 import {OrganisationChartComponent} from "./pages/organisation-chart/organisation-chart/organisation-chart.component";
 import {EmployeeService} from "./services/employee.service";
+import {MessageService} from "primeng/api";
 
 
 @Component({
@@ -18,7 +19,7 @@ import {EmployeeService} from "./services/employee.service";
     MenubarModule, BreadcrumbComponent, FoooterComponent,DividerModule,EmployeeComponent,OrganisationChartComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [EmployeeService]
+  providers: [EmployeeService,MessageService]
 })
 export class AppComponent {
   title = 'frontend';

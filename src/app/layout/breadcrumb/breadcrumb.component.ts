@@ -36,7 +36,7 @@ export class BreadcrumbComponent  implements OnInit{
     else if (url ==='/') {
       this.items=[{label:'Employee'}]
     } else{
-      //pourr les cas futures
+      //pour les cas futures
     }
   }
 }

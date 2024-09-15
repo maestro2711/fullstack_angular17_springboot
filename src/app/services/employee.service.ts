@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {EmployeeResponse} from "../../api";
+import {EmployeeRequest, EmployeeResponse} from "../../api";
+// @ts-ignore
+import {Position} from "../model/position";
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +11,26 @@ import {EmployeeResponse} from "../../api";
 export class EmployeeService {
 
   private apiUrl:string = 'http://localhost:8081/employees';
+
   constructor(private http:HttpClient) {}
+
   public getAllEmployees():Observable<EmployeeResponse[]>{
     return this.http.get<EmployeeResponse[]>(this.apiUrl);
   }
+
+  // @ts-ignore
+  public getSuperiorsByPosition(position: Position): Observable<SuperiorResponse[]> {
+    const params: HttpParams = new HttpParams().set('position', position);
+    // @ts-ignore
+    return this.http.get<SuperiorResponse[]>(this.apiUrl + '/superiors', {params});
+  }
+
+  public createEmployee(employeeRequest: EmployeeRequest): Observable<EmployeeResponse> {
+    return this.http.post<EmployeeResponse>(`${this.apiUrl}`, employeeRequest);
+  }
+
+
+
+
+
 }
