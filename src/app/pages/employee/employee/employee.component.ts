@@ -204,6 +204,8 @@ export class EmployeeComponent implements OnInit{
 
   public onGlobFilter(table: Table, event: Event): void {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+
+
   }
 
   public openCreateEmployee(): void{

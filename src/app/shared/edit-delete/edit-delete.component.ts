@@ -22,6 +22,7 @@ export class EditDeleteComponent {
   employeeProp!:EmployeeResponse
 
 
+
   @Output()
   public onDelete:EventEmitter<EmployeeResponse>=new EventEmitter();
 
