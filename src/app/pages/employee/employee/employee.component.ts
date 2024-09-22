@@ -26,6 +26,7 @@ import {InputMaskModule} from "primeng/inputmask";
 import {minAgeDateValidator, trimValidator} from "../../../utils/custom-validator";
 import {MessageService} from "primeng/api";
 import {ErrorMessagesComponent} from "../../../shared/error-messages/error-messages.component";
+import {EditDeleteComponent} from "../../../shared/edit-delete/edit-delete.component";
 
 @Component({
   selector: 'app-employee',
@@ -52,7 +53,7 @@ import {ErrorMessagesComponent} from "../../../shared/error-messages/error-messa
     CalendarModule,
     InputNumberModule,
     FormsModule,
-    InputMaskModule,ErrorMessagesComponent,AsyncPipe
+    InputMaskModule, ErrorMessagesComponent, AsyncPipe, EditDeleteComponent
   ],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.scss'
@@ -75,7 +76,7 @@ export class EmployeeComponent implements OnInit{
   public positionOptions = [
     { label: 'CEO', value: 'CEO' },
     { label: 'CTO', value: 'CTO' },
-    { label: 'C00', value: 'CTO' },
+    { label: 'C00', value: 'COO' },
     { label: 'Team Manager Software', value: 'TEAM_MANAGER_SOFTWARE' },
     { label: 'Senior Software Developer', value: 'SENIOR_SOFTWARE_DEVELOPER' },
     { label: 'Software Developer', value: 'SOFTWARE_DEVELOPER' },
@@ -98,6 +99,9 @@ export class EmployeeComponent implements OnInit{
   }
 
   public getSuperiorByPosition(): void{
+    this.employeeForm.patchValue({
+      superiorId:null
+    })
     this.superiorByPosition$ = this.employeeService.getSuperiorsByPosition(this.employeeForm.value.position);
   }
 
@@ -125,8 +129,42 @@ export class EmployeeComponent implements OnInit{
       this.employeeForm.markAllAsTouched();
       this.messageService.add({severity: 'error', summary: 'Error', detail: 'Please correct the form'})
     }else{
-      this.createEmployee(this.employeeForm.value);
+      if (this.employeeForm.value.id){
+        //edit/update
+        this.updateEmployee(this.employeeForm.value)
+      }else{
+        this.createEmployee(this.employeeForm.value);
+      }
+
     }
+  }
+
+  public showEditDialog(employeeReponse:EmployeeResponse):void{
+    this.employeeForm.patchValue({
+      ...employeeReponse
+    });
+    this.showDialog= true;
+    this.dialogTitle = 'Edit Employee';
+    this.superiorByPosition$ = this.employeeService.getSuperiorsByPosition(this.employeeForm.value.position);
+  }
+
+  public delete(employee:EmployeeResponse):void{
+    /*this.confirmationService.confirm({,
+      message: 'Do you want to delete this employee?',
+      header: 'Delete Confirmation',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass:"p-button-danger p-button-text",
+      rejectButtonStyleClass:"p-button-text p-button-text",
+      acceptIcon:"none",
+      rejectIcon:"none",
+
+      accept: () => {
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      }
+    });*/
   }
 
   private createEmployee(employeeRequest: EmployeeRequest): void{
@@ -146,11 +184,30 @@ export class EmployeeComponent implements OnInit{
       });
   }
 
+  public updateEmployee(employeeRequest:EmployeeRequest):void{
+    this.employeeService.updateEmployee(this.employeeForm.value.id,employeeRequest).pipe(take(1)).subscribe({
+      next:(employeeResponse:EmployeeResponse):void=> {
+        this.employees = this.employees.map((employeeResponseMap: EmployeeResponse): EmployeeResponse =>{
+          if (employeeResponse.id === employeeResponseMap.id) {
+            return employeeResponse;
+          }
+          return employeeResponseMap;
+        });
+        this.showDialog = false;
+        this.messageService.add({severity: 'success', summary: 'Success', detail: 'update Employee successfully'});
+    },
+      error:():void=>{
+        this.messageService.add({severity: 'error', summary: 'Error', detail: 'Something went wrong'});
+      }
+    })
+  }
+
   public onGlobFilter(table: Table, event: Event): void {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
 
   public openCreateEmployee(): void{
+    this.dialogTitle='Add Employee';
     this.showDialog = true;
     this.employeeForm.reset();
   }

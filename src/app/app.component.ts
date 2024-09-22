@@ -9,17 +9,18 @@ import { DividerModule } from 'primeng/divider';
 import {EmployeeComponent} from "./pages/employee/employee/employee.component";
 import {OrganisationChartComponent} from "./pages/organisation-chart/organisation-chart/organisation-chart.component";
 import {EmployeeService} from "./services/employee.service";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
+import {ToastModule} from "primeng/toast";
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, ButtonModule, HeaderComponent,
-    MenubarModule, BreadcrumbComponent, FoooterComponent,DividerModule,EmployeeComponent,OrganisationChartComponent],
+    MenubarModule, BreadcrumbComponent, FoooterComponent, DividerModule, EmployeeComponent, OrganisationChartComponent, ToastModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [EmployeeService,MessageService]
+  providers: [EmployeeService,MessageService,ConfirmationService]
 })
 export class AppComponent {
   title = 'frontend';

@@ -29,6 +29,9 @@ export class EmployeeService {
     return this.http.post<EmployeeResponse>(`${this.apiUrl}`, employeeRequest);
   }
 
+  public updateEmployee(id:string, employeeRequest:EmployeeRequest):Observable<EmployeeResponse>{
+    return this.http.put<EmployeeResponse>('${this.apiurl}/${id}',employeeRequest);
+  }
 
 
 

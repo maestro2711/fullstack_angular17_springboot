@@ -1,0 +1,5 @@
+<ng-container *ngIf="isNotValid">
+  <ng-container>
+    {{validatorService.getErrorMessage(formControl)}}
+  </ng-container>
+</ng-container>
