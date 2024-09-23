@@ -33,7 +33,9 @@ export class EmployeeService {
     return this.http.put<EmployeeResponse>('${this.apiurl}/${id}',employeeRequest);
   }
 
-
+public deleteEmployeeById(id:string):Observable<void>{
+    return this.http.delete<void>('${this.apiUrl}/${id');
+}
 
 
 }

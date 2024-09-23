@@ -11,13 +11,14 @@ import {OrganisationChartComponent} from "./pages/organisation-chart/organisatio
 import {EmployeeService} from "./services/employee.service";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ToastModule} from "primeng/toast";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, ButtonModule, HeaderComponent,
-    MenubarModule, BreadcrumbComponent, FoooterComponent, DividerModule, EmployeeComponent, OrganisationChartComponent, ToastModule],
+    MenubarModule, BreadcrumbComponent, FoooterComponent, DividerModule, EmployeeComponent, OrganisationChartComponent, ToastModule, ConfirmDialogModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [EmployeeService,MessageService,ConfirmationService]

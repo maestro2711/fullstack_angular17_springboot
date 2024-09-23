@@ -24,7 +24,7 @@ import {CalendarModule} from "primeng/calendar";
 import {InputNumberModule} from "primeng/inputnumber";
 import {InputMaskModule} from "primeng/inputmask";
 import {minAgeDateValidator, trimValidator} from "../../../utils/custom-validator";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {ErrorMessagesComponent} from "../../../shared/error-messages/error-messages.component";
 import {EditDeleteComponent} from "../../../shared/edit-delete/edit-delete.component";
 
@@ -67,7 +67,7 @@ export class EmployeeComponent implements OnInit{
   public loading: boolean = true;
   public showDialog: boolean = false;
   public employeeForm!: FormGroup;
-  public superiorByPosition$!: Observable<SuperiorResponse[]>;
+  public superiorByPosition$!: Observable<SuperiorResponse[]> |null;
 
   public genderOptions = [
     { label: 'Men', value: 'MEN' },
@@ -88,6 +88,7 @@ export class EmployeeComponent implements OnInit{
   constructor(
     private employeeService: EmployeeService,
     private messageService: MessageService,
+    private confirmationService:ConfirmationService
   ){
 
   }
@@ -147,10 +148,15 @@ export class EmployeeComponent implements OnInit{
     this.dialogTitle = 'Edit Employee';
     this.superiorByPosition$ = this.employeeService.getSuperiorsByPosition(this.employeeForm.value.position);
   }
+  public openCreateEmployee(): void{
+    this.dialogTitle='Add Employee';
+    this.showDialog = true;
+    this.employeeForm.reset();
+  }
 
   public delete(employee:EmployeeResponse):void{
-    /*this.confirmationService.confirm({,
-      message: 'Do you want to delete this employee?',
+    this.confirmationService.confirm({
+      message: 'Do you want to delete this employee ' +employee.firstName,
       header: 'Delete Confirmation',
       icon: 'pi pi-info-circle',
       acceptButtonStyleClass:"p-button-danger p-button-text",
@@ -158,13 +164,22 @@ export class EmployeeComponent implements OnInit{
       acceptIcon:"none",
       rejectIcon:"none",
 
-      accept: () => {
-        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
+      accept: ():void => {
+        this.employeeService.deleteEmployeeById(employee.id).pipe(take(1)).subscribe(
+          {
+            next:():void=>{
+              this.employees = this.employees.filter((val :EmployeeResponse):boolean =>val.id !==employee.id);
+              this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'employee successfully deleted' });
+            },
+            error:():void=>{
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'employee  deleted Error' });
+            }
+          }
+        )
+
       },
-      reject: () => {
-        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
-      }
-    });*/
+
+    });
   }
 
   private createEmployee(employeeRequest: EmployeeRequest): void{
@@ -208,11 +223,7 @@ export class EmployeeComponent implements OnInit{
 
   }
 
-  public openCreateEmployee(): void{
-    this.dialogTitle='Add Employee';
-    this.showDialog = true;
-    this.employeeForm.reset();
-  }
+
 
   private setupCols(): void{
     this.cols = [
