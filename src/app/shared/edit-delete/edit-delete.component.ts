@@ -27,8 +27,10 @@ export class EditDeleteComponent {
   public onDelete:EventEmitter<EmployeeResponse>=new EventEmitter();
 
   @Output()
-
   public onEdit:EventEmitter<EmployeeResponse> = new EventEmitter();
+
+  @Output()
+  public onView:EventEmitter<EmployeeResponse> = new EventEmitter();
 
   public edit(employee:EmployeeResponse):void{
     this.onEdit.emit(employee);
@@ -36,5 +38,9 @@ export class EditDeleteComponent {
 
   public delete(employee:EmployeeResponse):void{
     this.onDelete.emit(employee);
+  }
+
+  public view(employee:EmployeeResponse):void{
+    this.onView.emit(employee);
   }
 }

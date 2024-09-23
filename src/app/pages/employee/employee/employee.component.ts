@@ -4,7 +4,7 @@ import {Observable, take} from "rxjs";
 import { EmployeeService} from "../../../services/employee.service";
 // @ts-ignore
 import {EmployeeRequest, EmployeeResponse,SuperiorResponse} from "../../../../dto";
-import {AsyncPipe, DatePipe, JsonPipe, LowerCasePipe} from "@angular/common";
+import {AsyncPipe, DatePipe, JsonPipe, LowerCasePipe, NgIf} from "@angular/common";
 import {Table, TableModule} from "primeng/table";
 import {Column} from "../../../models/column";
 import {AvatarModule} from "primeng/avatar";
@@ -53,7 +53,7 @@ import {EditDeleteComponent} from "../../../shared/edit-delete/edit-delete.compo
     CalendarModule,
     InputNumberModule,
     FormsModule,
-    InputMaskModule, ErrorMessagesComponent, AsyncPipe, EditDeleteComponent
+    InputMaskModule, ErrorMessagesComponent, AsyncPipe, EditDeleteComponent, NgIf
   ],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.scss'
@@ -66,6 +66,7 @@ export class EmployeeComponent implements OnInit{
   public globalFilterFields: string[] = [];
   public loading: boolean = true;
   public showDialog: boolean = false;
+  public onViewMode:boolean=true;
   public employeeForm!: FormGroup;
   public superiorByPosition$!: Observable<SuperiorResponse[]> |null;
 
@@ -140,21 +141,44 @@ export class EmployeeComponent implements OnInit{
     }
   }
 
-  public showEditDialog(employeeReponse:EmployeeResponse):void{
+  public showEditDialog(employeeReponse: EmployeeResponse):void{
+    this.employeeForm.enable();
     this.employeeForm.patchValue({
       ...employeeReponse
     });
     this.showDialog= true;
-    this.dialogTitle = 'Edit Employee';
+    this.onViewMode=false;
+    this.dialogTitle = 'Edit Employee('+employeeReponse.firstName+')';
     this.superiorByPosition$ = this.employeeService.getSuperiorsByPosition(this.employeeForm.value.position);
   }
   public openCreateEmployee(): void{
     this.dialogTitle='Add Employee';
     this.showDialog = true;
+    this.onViewMode=false;
+    this.employeeForm.enable();
     this.employeeForm.reset();
+    this.superiorByPosition$= null;
   }
 
-  public delete(employee:EmployeeResponse):void{
+  public editMode():void{
+    this.dialogTitle='Edit Employee ('+this.employeeForm.value.firstName+')';
+    this.employeeForm.enable();
+    this.onViewMode=false;
+  }
+
+  public openViewEmployee(employee: EmployeeResponse):void{
+    this.dialogTitle='View Employee ('+employee.firstName+')';
+    this.showDialog = true;
+    this.onViewMode=true;
+    this.employeeForm.patchValue({
+      ...employee
+    })
+    this.employeeForm.disable();
+
+  }
+
+
+  public delete(employee: EmployeeResponse):void{
     this.confirmationService.confirm({
       message: 'Do you want to delete this employee ' +employee.firstName,
       header: 'Delete Confirmation',
