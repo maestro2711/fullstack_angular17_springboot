@@ -30,11 +30,11 @@ export class EmployeeService {
   }
 
   public updateEmployee(id:string, employeeRequest:EmployeeRequest):Observable<EmployeeResponse>{
-    return this.http.put<EmployeeResponse>('${this.apiurl}/${id}',employeeRequest);
+    return this.http.put<EmployeeResponse>(`${this.apiUrl}/${id}`,employeeRequest);
   }
 
 public deleteEmployeeById(id:string):Observable<void>{
-    return this.http.delete<void>('${this.apiUrl}/${id');
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
 }
 
 
